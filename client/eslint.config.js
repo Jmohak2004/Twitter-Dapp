@@ -18,5 +18,9 @@ export default defineConfig([
     languageOptions: {
       globals: globals.browser,
     },
+    rules: {
+      // Resetting form state when a transaction receipt lands is a valid use of effects with wagmi.
+      'react-hooks/set-state-in-effect': 'off',
+    },
   },
 ])
