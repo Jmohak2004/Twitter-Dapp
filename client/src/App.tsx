@@ -21,31 +21,32 @@ function App() {
       <ConnectBar />
       <NetworkGuard />
       <main className="main">
-        <p className="lede">
-          A minimal Twitter-style feed on Ethereum: posts, likes, and handles are stored in{' '}
-          <code>DecentralizedTwitter</code>. Use Hardhat (chain <strong>31337</strong>) for local
-          development, or switch to <strong>Sepolia</strong> in your wallet and set{' '}
-          <code>VITE_PREFERRED_CHAIN_ID=11155111</code> when you deploy there.
-        </p>
+        {(!ready || !contract) && (
+          <p className="lede">Posts, likes, and @handles — on-chain. Connect a wallet to read and write.</p>
+        )}
 
         {!ready && <p className="muted">Resolving contract address…</p>}
         {ready && !contract && (
           <div className="callout" role="status">
             <p>
-              <strong>No contract address found.</strong> Deploy the contract, then set{' '}
-              <code>VITE_CONTRACT_ADDRESS</code> in <code>client/.env</code> or set{' '}
-              <code>CONTRACT_ADDRESS</code> in the server (see <code>server/.env</code>).
+              <strong>No contract configured.</strong> Set <code>VITE_CONTRACT_ADDRESS=0x…</code> in{' '}
+              <code>client/.env</code>, or run the server with <code>CONTRACT_ADDRESS</code> (Vite
+              proxies <code>/api/contract</code> in dev).
             </p>
-            <p className="small muted">
-              Start chain: <code>npm run node</code> in <code>contracts</code> · deploy:{' '}
-              <code>npm run deploy:local</code>
+            <p className="callout-commands small muted">
+              <span>Local:</span> <code>npm run node</code> + <code>npm run deploy:local</code> in{' '}
+              <code>contracts/</code> — deploy script updates <code>.env</code>.
+            </p>
+            <p className="callout-commands small muted">
+              <span>Sepolia:</span> deploy there, same address in <code>.env</code>, add{' '}
+              <code>VITE_PREFERRED_CHAIN_ID=11155111</code>, pick Sepolia in your wallet.
             </p>
           </div>
         )}
 
         {ready && contract && (
           <p className="contract-line muted small">
-            Contract: <code className="addr">{contract}</code> · network: {preferredChain.name}
+            <code className="addr">{contract}</code> · {preferredChain.name}
           </p>
         )}
 

@@ -9,6 +9,7 @@ import {
 import { useQueryClient } from '@tanstack/react-query'
 import type { Address } from 'viem'
 import { twitterAbi } from '../abi/contract'
+import { preferredChainId } from '../lib/chains'
 import { timeAgoFromUnix, formatAuthor } from '../lib/format'
 
 const MAX_FEED = 200
@@ -27,10 +28,16 @@ type RowPost = {
 export function PostList({ contract, enabled }: Props) {
   const { address: user, isConnected } = useAccount()
   const queryClient = useQueryClient()
-  const { data: count, isLoading: countLoading } = useReadContract({
+  const {
+    data: count,
+    isLoading: countLoading,
+    isError: countFailed,
+    error: countError,
+  } = useReadContract({
     address: contract,
     abi: twitterAbi,
     functionName: 'postCount',
+    chainId: preferredChainId,
     query: { enabled: enabled, refetchInterval: 10_000 },
   })
 
@@ -49,6 +56,7 @@ export function PostList({ contract, enabled }: Props) {
       abi: twitterAbi,
       functionName: 'getPost' as const,
       args: [postId],
+      chainId: preferredChainId,
     })),
     query: { enabled: enabled && ids.length > 0 },
   })
@@ -82,6 +90,7 @@ export function PostList({ contract, enabled }: Props) {
       abi: twitterAbi,
       functionName: 'profileHandle' as const,
       args: [a],
+      chainId: preferredChainId,
     })),
     query: { enabled: enabled && uniqueAuthors.length > 0 },
   })
@@ -107,6 +116,7 @@ export function PostList({ contract, enabled }: Props) {
             abi: twitterAbi,
             functionName: 'hasLiked' as const,
             args: [user, p.id],
+            chainId: preferredChainId,
           }))
         : [],
     query: { enabled: enabled && isConnected && !!user && posts.length > 0 },
@@ -126,6 +136,20 @@ export function PostList({ contract, enabled }: Props) {
 
   if (!enabled) {
     return null
+  }
+  if (countFailed) {
+    return (
+      <div className="feed-error callout" role="alert">
+        <p className="error-text">Couldn’t load the feed (post count).</p>
+        <p className="small muted">
+          <strong>Local Hardhat:</strong> run <code>npm run node</code> in <code>contracts</code> so{' '}
+          <code>127.0.0.1:8545</code> is up. <strong>Sepolia:</strong> set{' '}
+          <code>VITE_PREFERRED_CHAIN_ID=11155111</code> and a contract address deployed on Sepolia.{' '}
+          Restart <code>npm run dev</code> after changing <code>.env</code>.
+        </p>
+        {countError != null && <p className="small muted error-detail">{countError.message}</p>}
+      </div>
+    )
   }
   if (countLoading) {
     return <p className="muted">Loading post count…</p>
