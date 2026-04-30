@@ -4,6 +4,7 @@ import { isValidHandle, MAX_HANDLE_LEN, MIN_HANDLE_LEN } from '../lib/handleVali
 import { useQueryClient } from '@tanstack/react-query'
 import type { Address } from 'viem'
 import { twitterAbi } from '../abi/contract'
+import { preferredChainId } from '../lib/chains'
 import { formatAuthor } from '../lib/format'
 
 type Props = { contract: Address; enabled: boolean }
@@ -17,18 +18,21 @@ export function ProfilePanel({ contract, enabled }: Props) {
     abi: twitterAbi,
     functionName: 'profileHandle',
     args: address ? [address] : undefined,
+    chainId: preferredChainId,
     query: { enabled: enabled && isConnected && !!address },
   })
   const { data: minLen } = useReadContract({
     address: contract,
     abi: twitterAbi,
     functionName: 'MIN_HANDLE_LENGTH',
+    chainId: preferredChainId,
     query: { enabled: enabled && isConnected },
   })
   const { data: maxLen } = useReadContract({
     address: contract,
     abi: twitterAbi,
     functionName: 'MAX_HANDLE_LENGTH',
+    chainId: preferredChainId,
     query: { enabled: enabled && isConnected },
   })
   const { writeContract, data: hash, error: writeError, isPending, reset } = useWriteContract()

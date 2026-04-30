@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import type { Address } from 'viem'
 import { twitterAbi } from '../abi/contract'
+import { preferredChainId } from '../lib/chains'
 
 type Props = { contract: Address; enabled: boolean }
 
@@ -15,6 +16,7 @@ export function ComposePost({ contract, enabled }: Props) {
     address: contract,
     abi: twitterAbi,
     functionName: 'MAX_POST_LENGTH',
+    chainId: preferredChainId,
     query: { enabled: enabled && isConnected },
   })
   const max =
