@@ -11,7 +11,10 @@ export function ConnectBar() {
 
   return (
     <header className="connect-bar">
-      <div className="brand">Chain Twitter</div>
+      <div className="brand-block">
+        <div className="brand">PAPER / CHAIN</div>
+        <p className="brand-sub">vintage on-chain memos</p>
+      </div>
       <div className="connect-actions">
         {error && (
           <span className="error-text small" title={error.message}>
