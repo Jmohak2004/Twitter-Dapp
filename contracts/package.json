@@ -7,10 +7,12 @@
     "postcompile": "node -e \"const fs=require('fs'),p='./artifacts/contracts/DecentralizedTwitter.sol/DecentralizedTwitter.json';if(!fs.existsSync(p))process.exit(0);const j=require('./artifacts/contracts/DecentralizedTwitter.sol/DecentralizedTwitter.json');fs.mkdirSync('../client/src/abi',{recursive:true});fs.writeFileSync('../client/src/abi/DecentralizedTwitter.json',JSON.stringify({abi:j.abi}));\"",
     "test": "hardhat test",
     "node": "hardhat node",
-    "deploy:local": "hardhat run scripts/deploy.js --network localhost"
+    "deploy:local": "hardhat run scripts/deploy.js --network localhost",
+    "deploy:sepolia": "hardhat run scripts/deploy.js --network sepolia"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "dotenv": "^17.4.2",
     "hardhat": "^2.22.0"
   }
 }
